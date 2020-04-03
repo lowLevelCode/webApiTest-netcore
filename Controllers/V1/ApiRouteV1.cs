@@ -1,6 +1,6 @@
-namespace webApiTest.RoutesApi.V1
+namespace webApiTest.Controllers.V1
 {
-    public static class ApiRoutes
+    public static class ApiRouteV1
     {
         public const string URL = "api/v1/[controller]";
     }
