@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using webApiTest.Domain.Posts;
-
+using System.Threading.Tasks;
 
 namespace webApiTest.Controllers.V1
 {
@@ -18,33 +18,35 @@ namespace webApiTest.Controllers.V1
         }
 
         [HttpGet]
-        public IEnumerable<Post> GetAllPosts()
-        {
-            return _postService.GetAllPosts();
-        }
+        public async Task<IEnumerable<Post>> GetAllPosts()=> await  _postService.GetAllPostsAsync();
 
         [HttpGet("{id}")]
-        public Post GetPostById(int id)
-        {
-            return _postService.GetPostById(id);
-        }
+        public async Task<Post> GetPostById(int id)=> await _postService.GetPostByIdAsync(id);        
 
         [HttpPost("Create")]
-        public void CreatePost([FromBody] Post post)
+        public async Task<IActionResult> CreatePost([FromBody] Post post)
         {
-            _postService.CreatePost(post);
+            var created = await _postService.CreatePostAsync(post);
+            if(created > 0)
+                return Ok("Creado con exito!");
+            
+            return BadRequest("No se pudo crear el post");
         }
 
         [HttpPut("update/{id}")]
-        public void UpdatePost(int id, [FromBody] Post post)
+        public async Task<IActionResult> UpdatePostAsync(int id, [FromBody] Post post)
         {
-            _postService.UpdatePost(id,post);
-        }
-
-        [HttpDelete("delete/{id}")]
-        public void DeletePost(int id)
-        {
-            _postService.DeletePost(id);
-        }
+            try
+            {
+                var updated = await _postService.UpdatePostAsync(id,post);
+                if(updated > 0)
+                    return Ok("Actualizado con exito!");            
+                return BadRequest("No se pudo Actualizar el post");   
+            }
+            catch (Exception ex)
+            {                
+                return BadRequest(ex.Message);
+            }            
+        }        
     }
 }
