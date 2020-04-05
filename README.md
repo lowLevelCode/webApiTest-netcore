@@ -1,2 +1,2 @@
 # webApiTest-netcore
-Creando una web desde vs code solo con netcore
+Creando una api desde vs code solo con netcore. 
