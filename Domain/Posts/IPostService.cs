@@ -1,13 +1,14 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace webApiTest.Domain.Posts
 {
     public interface IPostService
     {
-        IEnumerable<Post> GetAllPosts();
-        Post GetPostById(int id);        
-        int CreatePost(Post post);
-        int UpdatePost(int id, Post post);
-        int DeletePost(int id);
+        Task<IEnumerable<Post>> GetAllPostsAsync();
+        Task<Post> GetPostByIdAsync(int id);        
+        Task<int> CreatePostAsync(Post post);
+        Task<int> UpdatePostAsync(int id, Post post);
+        Task<int> DeletePostAsync(int id);
     }
 }

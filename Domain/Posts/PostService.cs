@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace webApiTest.Domain.Posts
 {
@@ -12,34 +13,29 @@ namespace webApiTest.Domain.Posts
             _postRepository = postRepository;            
         }
 
-        public IEnumerable<Post> GetAllPosts()
-        {
-            return _postRepository.GetAll();
-        }
-
-        public Post GetPostById(int id)   
-        {
-            return _postRepository.GetById(id);
-        }
-
-        public int CreatePost(Post post)
+        public async Task<IEnumerable<Post>> GetAllPostsAsync()=> await _postRepository.GetAllAsync();
+        public async Task<Post> GetPostByIdAsync(int id)=> await _postRepository.GetByIdAsync(id);
+        public async Task<int> CreatePostAsync(Post post)
         {
             _postRepository.Add(post);
-            return _postRepository.Save();            
+            return await _postRepository.SaveAsync();
+        }        
+
+        public async Task<int> UpdatePostAsync(int id, Post post)
+        {
+            var postResult = await _postRepository.GetByIdAsync(id);
+            if(postResult == null)
+                throw new NullReferenceException("No existe el post.");
+
+            _postRepository.Update(postResult);
+            return await _postRepository.SaveAsync();
         }
 
-        public int UpdatePost(int id, Post post)
+        public async Task<int> DeletePostAsync(int id)
         {
-            var postResult = _postRepository.GetById(id);
-            _postRepository.Update(post);
-            return _postRepository.Save();
-        }
-
-        public int DeletePost(int id)
-        {
-            var post = _postRepository.GetById(id);
-            _postRepository.Remove(post);
-            return _postRepository.Save();
-        }
+            var postResult = await _postRepository.GetByIdAsync(id);
+            _postRepository.Remove(postResult);
+            return await _postRepository.SaveAsync();            
+        }        
     }
 }
